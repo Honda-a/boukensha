@@ -1,0 +1,20 @@
+naming convection:
+    abstract class names: abstractclassname, all lower case
+    base class: baseclassname, same as abstract class
+    sub class name: SubClassName, words start with upper case
+    method names: method_name, all lower case underscore between words
+    public variable names: variable_name, same as method name
+    protected variable names: _protected_variable_name, same as public variable name but starts with a underscore
+    private variable names: __private_variable_name, same as public variable name but starts with two underscores
+    file names: filename, sane as abstract class name
+
+
+object development process:
+    (optional)abstract class -> base class -> subclass instantiation -> main
+
+hierarchy:
+    if possible, change if needed
+        Game super class
+            view
+            map
+            objects
