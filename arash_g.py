@@ -20,19 +20,22 @@ class Game:
         """
         self.player = Player(self.view_width, self.view_height)
         return {
-            "player": self.player
+            "player": self.player,
+            "mob": []
         }
         
 
-    def update_player_pos(self):
-        if self.view.game_map[self.player.y][self.player.x] == 0:
-            self.view.game_map[self.player.last_pos[1]][self.player.last_pos[0]] = 0
-            self.view.game_map[self.player.y][self.player.x] = self.player
+    def update_object_pos(self, mover, auto=False):
+        if mover.x > self.view_width or mover.y > self.view_height:
+            mover
+        if self.view.game_map[mover.y][mover.x] == 0:
+            self.view.game_map[mover.last_pos[1]][mover.last_pos[0]] = 0
+            self.view.game_map[mover.y][mover.x] = mover
         else:
-            enemy = self.view.game_map[self.player.y][self.player.x]
-            self.player.x = self.player.last_pos[0]
-            self.player.y = self.player.last_pos[1]
-            self.battle(player=self.player, enemy=enemy)
+            enemy = self.view.game_map[mover.y][mover.x]
+            mover.x = mover.last_pos[0]
+            mover.y = mover.last_pos[1]
+            self.battle(attacker=mover, enemy=enemy, auto=auto)
 
     def set_player_pos(self):
         while True:
@@ -42,51 +45,58 @@ class Game:
             self.player.y = randint(0, self.view_height)
             self.player.x = randint(0, self.view_width)
 
-    # def update_enemy(self):
-    #     for y in self.view.game_map:
-    #         row = []
-    #         for x in y:
-    #             if x == 0:
-    #                 row.append(" ")
-    #             elif isinstance(x, Mob):
-    #                 row.append(x.charactar)
-    #             else:
-    #                 row.append(x)
+    def update_enemy(self):
+        for mob in self.gameobjects["mob"]:
+            direction = choice(["a", "w", "d", "s"])
+            mob.move(direction)
+            if not mob.dead:
+                self.update_object_pos(mob, auto=True)
+
 
     def run(self):
         while True:
             self.player.move()
-            self.update_player_pos()
-            # self.update_enemy()
+            self.update_object_pos(self.player)
+            self.update_enemy()
             self.view.render()
 
     def game_over(self):
         print("GAME OVER TRY NEXT TIME")
         quit()
 
-    def battle(self, player, enemy, auto=False) -> bool:
-        while not (player.dead == True or enemy.dead == True):
+    def battle(self, attacker, enemy, auto=False) -> bool:
+        if not enemy.vulnerable:
+            if not auto:
+                print("Invulnerable object change direction")
+            return False
+        while not (attacker.dead == True or enemy.dead == True):
             if auto:
-                player.attack(enemy)
-                enemy.attack(player)
+                attacker.attack(enemy, auto)
+                enemy.attack(attacker, auto)
             else:
                 enemy.stats()
                 player_input = input("enemy ahead what to do?(attack / run / use magic(not usable))")
                 if player_input in ["attack" ,"a"]:
-                    player.attack(enemy)
-                    self.view.message += f"\n player health: {player.health}, enemy dead: {enemy.dead}\n"
-                    enemy.attack(player)
-                    self.view.message += f"\n player health: {player.health}, enemy health: {enemy.health}\n"
+                    attacker.attack(enemy)
+                    self.view.message += f"\n attacker health: {attacker.health}, enemy dead: {enemy.dead}\n"
+                    enemy.attack(attacker)
+                    self.view.message += f"\n player health: {attacker.health}, enemy health: {enemy.health}\n"
                 elif player_input == "run":
-                    print(player.health, enemy.health)
+                    print(attacker.health, enemy.health)
                     break
                 else:
                     print(player_input)
                     continue
-        if player.dead:
-            self.game_over()
+        if attacker.dead:
+            if attacker.type == const.types.PLAYER:
+                self.game_over()
+            else:
+                self.view.game_map[attacker.y][attacker.x] = 0
+                enemy.update(attacker)
+
         if enemy.dead:
             self.view.game_map[enemy.y][enemy.x] = 0
+            attacker.update(enemy)
 
 
 main = Game()

@@ -10,9 +10,11 @@ class gameobject:
         self.dead: bool = False
         self._health: float = 0.0
         self._damage: float = 0.0
+        self._vulnerable: bool = True
         self.type: str = "object"
         self.name: str = self.type
         self.charactar: str = ""
+        self.last_direction: str = ""
 
     @property
     def health(self) -> float:
@@ -30,15 +32,29 @@ class gameobject:
     def damage(self, damage: float) -> None:
         self._damage = damage
 
-    def take_damage(self, damage: int) -> None:
-        print(f"{self.charactar} took {damage} damage")
+    @property
+    def vulnerable(self) -> bool:
+        return self._vulnerable
+
+    @vulnerable.setter
+    def vulnerable(self, vulnerable: bool) -> None:
+        self._vulnerable = vulnerable
+
+    def take_damage(self, damage: int, auto: bool=False) -> None:
+        if not auto:
+            print(f"{self.charactar} took {damage} damage")
         self._health -= damage
         if self._health <= 0:
             self.dead = True
 
-    def attack(self, enemy) -> None:
-        print(f"{self.charactar} attacks with {self._damage} damage")
-        enemy.take_damage(self._damage)
+    def attack(self, enemy, auto: bool=False) -> None:
+        if not auto:
+            print(f"{self.charactar} attacks with {self._damage} damage")
+        if enemy.vulnerable:
+            enemy.take_damage(self._damage, auto)
+            return True
+        else: 
+            return False
 
     def apply_magic(self, enemy) -> None:
         enemy.take_damage(self._damage)
@@ -60,17 +76,21 @@ class movingobject(gameobject):
         super().__init__()
         self.type = "moving"
 
-    def move(self):
-        direction = input("move to: ")
+    def move(self, direction: str=""):
+        if not direction:
+            direction = input("move to: ")
+            if not direction:
+                direction = self.last_direction
+        self.last_direction = direction
         self.last_pos = (self.x, self.y)
-        if direction.lower() in ["left", 'a'] and self.x > 0:
-            self.x -= 1
-        elif direction.lower() in ["right", 'd'] and self.x < self.view_width:
-            self.x += 1
-        elif direction.lower() in ["up", 'w'] and self.y < self.view_height:
-            self.y += 1
-        elif direction.lower() in ["down", 's'] and self.y > 0:
-            self.y -= 1
+        if direction.lower() in ["left", 'a']:
+            self.x, _ = self.check_coord(coordX=self.x-1)
+        elif direction.lower() in ["right", 'd']:
+            self.x, _ = self.check_coord(coordX=self.x+1)
+        elif direction.lower() in ["up", 'w']:
+            _, self.y = self.check_coord(coordY=self.y+1)
+        elif direction.lower() in ["down", 's']:
+            _, self.y = self.check_coord(coordY=self.y-1)
         else:
             print("""wrong input please use ['left key', 'right key', 'up key', 'down key'] OR
             ['a key', 'd key', 'w key', 's key'] """)
@@ -78,5 +98,17 @@ class movingobject(gameobject):
 
     def move_to(self, coordX: int, coordY):
         self.last_pos = (self.x, self.y)
-        self.x = coordX
-        self.y = coordY
+        self.x, self.y = self.check_coord(coordX, coordY)
+
+    def check_coord(self, coordX: int=0, coordY: int=0):
+        if coordX < 0:
+            coordX = 0
+        if coordX > self.view_width:
+            coordX = self.view_width
+        if coordY < 0:
+            coordY = 0
+        if coordY > self.view_height:
+            coordY = self.view_height
+        if coordX > self.view_width or coordY > self.view_height:
+            coordX
+        return coordX, coordY

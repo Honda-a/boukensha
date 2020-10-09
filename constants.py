@@ -13,6 +13,6 @@ class Types:
 types = Types()
 
 
-GAME_WIDTH = 26
-GAME_HEIGHT = 26
-CAMERA_VIEW = 5
+GAME_WIDTH = 106
+GAME_HEIGHT = 65
+CAMERA_VIEW = 10

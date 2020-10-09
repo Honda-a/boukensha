@@ -17,8 +17,9 @@ class Room:
 class RLDungeonGenerator:
     """ Generate the dungeon """
 
-    def __init__(self, width, height):
+    def __init__(self, width: int, height: int, gameobjects: dict):
         """ Create the board """
+        self.gameobjects = gameobjects
         self.MAX = 15  # Cutoff for when we want to stop dividing sections
         
         # make the range + 1 so we can avoid out of range problems
@@ -96,10 +97,11 @@ class RLDungeonGenerator:
                 Room(room_start_row, room_start_col, room_height, room_width))
             for r in range(room_start_row, room_start_row + room_height):
                 for c in range(room_start_col, room_start_col + room_width):
-                    if random.random() < 0.15:
-                        mob = Mob(self.width, self.height)
+                    if random.random() < 0.01:
+                        mob = Mob(self.width-1, self.height-1)
                         mob.move_to(coordX=c, coordY=r)
                         self.dungeon[r][c] = mob
+                        self.gameobjects["mob"].append(mob)
                     else:
                         self.dungeon[r][c] = 0
 

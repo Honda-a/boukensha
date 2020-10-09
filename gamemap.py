@@ -8,7 +8,7 @@ class GameView:
     def __init__(self, gameobjects, width, height):
         self.message = ""
         self.gameobjects = gameobjects
-        map_ganerator = MapGanerator(width, height)
+        map_ganerator = MapGanerator(width, height, self.gameobjects)
         self.game_map = map_ganerator.generate_map()
 
     def render(self) -> None:
