@@ -11,10 +11,10 @@ class GameView:
         map_ganerator = MapGanerator(width, height, self.gameobjects)
         self.game_map = map_ganerator.generate_map()
 
-    def render(self) -> None:
+    def render(self, player_id) -> None:
         canvas = []
-        player_x = self.gameobjects["player"].x
-        player_y = self.gameobjects["player"].y
+        player_x = self.gameobjects.player.get(player_id).x
+        player_y = self.gameobjects.player.get(player_id).y
 
         camera_x_min = player_x - const.CAMERA_VIEW
         camera_x_max = player_x + const.CAMERA_VIEW
@@ -49,6 +49,6 @@ class GameView:
         canvas = ['{:>60}'.format(row) for row in canvas]
         os.system('cls' if os.name == 'nt' else 'clear')
         print("\n".join(canvas))
-        self.gameobjects["player"].stats()
         print(self.message)
         self.message = ""
+        return canvas

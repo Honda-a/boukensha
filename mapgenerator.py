@@ -101,7 +101,7 @@ class RLDungeonGenerator:
                         mob = Mob(self.width-1, self.height-1)
                         mob.move_to(coordX=c, coordY=r)
                         self.dungeon[r][c] = mob
-                        self.gameobjects["mob"].append(mob)
+                        self.gameobjects.mob.append(mob)
                     else:
                         self.dungeon[r][c] = 0
 

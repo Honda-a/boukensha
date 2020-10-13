@@ -66,7 +66,10 @@ damage: {self.damage}
 type:   {self.type}
 """
         print(stats)
-    
+
+    def to_dict(self):
+        return self.__dict__
+
     def __str__(self) -> str:
         return self.charactar
 
@@ -112,3 +115,8 @@ class movingobject(gameobject):
         if coordX > self.view_width or coordY > self.view_height:
             coordX
         return coordX, coordY
+
+    @classmethod
+    def from_dict(cls, args: dict):
+        for attr, val in args.items():
+            setattr(cls, attr, val)

@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "boukensha"
+version = "0.0.1-alpha"
+description = "terminal RPG game"
+authors = ["Honda-a <arash.b7@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8.5"
+click = "^7.1.2"
+pygase = "^0.3.1"
+
+[tool.poetry.dev-dependencies]
+autopep8 = "^1.5.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

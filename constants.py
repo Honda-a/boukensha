@@ -16,3 +16,6 @@ types = Types()
 GAME_WIDTH = 106
 GAME_HEIGHT = 65
 CAMERA_VIEW = 10
+
+# 1 means every player move mobs move 0 means mob wont move
+MOB_MOVEMENT = 0.2
