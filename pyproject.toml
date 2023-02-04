@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "boukensha"
+version = "0.1.0"
+description = "this is a Command line game written in python"
+authors = ["Honda a <arash.b7@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.11.1"
+rich = "^13.3.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+isort = "^5.12.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
