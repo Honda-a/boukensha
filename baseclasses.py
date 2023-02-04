@@ -1,9 +1,9 @@
 from typing import overload
+
 import constants as const
 
 
 class gameobject:
-
     def __init__(self):
         self.x: int = 0
         self.y: int = 0
@@ -40,20 +40,20 @@ class gameobject:
     def vulnerable(self, vulnerable: bool) -> None:
         self._vulnerable = vulnerable
 
-    def take_damage(self, damage: int, auto: bool=False) -> None:
+    def take_damage(self, damage: int, auto: bool = False) -> None:
         if not auto:
             print(f"{self.charactar} took {damage} damage")
         self._health -= damage
         if self._health <= 0:
             self.dead = True
 
-    def attack(self, enemy, auto: bool=False) -> None:
+    def attack(self, enemy, auto: bool = False) -> None:
         if not auto:
             print(f"{self.charactar} attacks with {self._damage} damage")
         if enemy.vulnerable:
             enemy.take_damage(self._damage, auto)
             return True
-        else: 
+        else:
             return False
 
     def apply_magic(self, enemy) -> None:
@@ -66,7 +66,7 @@ damage: {self.damage}
 type:   {self.type}
 """
         print(stats)
-    
+
     def __str__(self) -> str:
         return self.charactar
 
@@ -76,31 +76,33 @@ class movingobject(gameobject):
         super().__init__()
         self.type = "moving"
 
-    def move(self, direction: str=""):
+    def move(self, direction: str = ""):
         if not direction:
             direction = input("move to: ")
             if not direction:
                 direction = self.last_direction
         self.last_direction = direction
         self.last_pos = (self.x, self.y)
-        if direction.lower() in ["left", 'a']:
-            self.x, _ = self.check_coord(coordX=self.x-1)
-        elif direction.lower() in ["right", 'd']:
-            self.x, _ = self.check_coord(coordX=self.x+1)
-        elif direction.lower() in ["up", 'w']:
-            _, self.y = self.check_coord(coordY=self.y+1)
-        elif direction.lower() in ["down", 's']:
-            _, self.y = self.check_coord(coordY=self.y-1)
+        if direction.lower() in ["left", "a"]:
+            self.x, _ = self.check_coord(coordX=self.x - 1)
+        elif direction.lower() in ["right", "d"]:
+            self.x, _ = self.check_coord(coordX=self.x + 1)
+        elif direction.lower() in ["up", "w"]:
+            _, self.y = self.check_coord(coordY=self.y + 1)
+        elif direction.lower() in ["down", "s"]:
+            _, self.y = self.check_coord(coordY=self.y - 1)
         else:
-            print("""wrong input please use ['left key', 'right key', 'up key', 'down key'] OR
-            ['a key', 'd key', 'w key', 's key'] """)
+            print(
+                """wrong input please use ['left key', 'right key', 'up key', 'down key'] OR
+            ['a key', 'd key', 'w key', 's key'] """
+            )
             self.move()
 
     def move_to(self, coordX: int, coordY):
         self.last_pos = (self.x, self.y)
         self.x, self.y = self.check_coord(coordX, coordY)
 
-    def check_coord(self, coordX: int=0, coordY: int=0):
+    def check_coord(self, coordX: int = 0, coordY: int = 0):
         if coordX < 0:
             coordX = 0
         if coordX > self.view_width:

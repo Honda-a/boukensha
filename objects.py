@@ -1,6 +1,8 @@
-from baseclasses import gameobject, movingobject
 from random import uniform
+
 import constants as const
+from baseclasses import gameobject, movingobject
+
 
 class Wall(gameobject):
     def __init__(self, view_width: int, view_height: int, x: int, y: int) -> None:
@@ -37,7 +39,7 @@ class Player(movingobject):
             f"{const.types.SPRIT}": 0,
             f"{const.types.OBJECT}": 0,
         }
-    
+
     def update(self, enemy: gameobject):
         """
         docstring
@@ -53,7 +55,7 @@ class Mob(movingobject):
     def __init__(self, view_width: int, view_height: int) -> None:
         super().__init__()
         self.view_width = view_width
-        self.view_height = view_height 
+        self.view_height = view_height
         self.last_pos = (0, 0)
         self.x = 0
         self.y = 0

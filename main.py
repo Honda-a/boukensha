@@ -1,11 +1,11 @@
-from random import randint, choice
-from objects import Player, Mob
-from gamemap import GameView
+from random import choice, randint
+
 import constants as const
+from gamemap import GameView
+from objects import Mob, Player
 
 
 class Game:
-
     def __init__(self):
         self.view_width = const.GAME_WIDTH
         self.view_height = const.GAME_HEIGHT
@@ -19,11 +19,7 @@ class Game:
         docstring
         """
         self.player = Player(self.view_width, self.view_height)
-        return {
-            "player": self.player,
-            "mob": []
-        }
-        
+        return {"player": self.player, "mob": []}
 
     def update_object_pos(self, mover, auto=False):
         if mover.x > self.view_width or mover.y > self.view_height:
@@ -52,7 +48,6 @@ class Game:
             if not mob.dead:
                 self.update_object_pos(mob, auto=True)
 
-
     def run(self):
         while True:
             self.player.move()
@@ -75,8 +70,10 @@ class Game:
                 enemy.attack(attacker, auto)
             else:
                 enemy.stats()
-                player_input = input("enemy ahead what to do?(attack / run / use magic(not usable))")
-                if player_input in ["attack" ,"a"]:
+                player_input = input(
+                    "enemy ahead what to do?(attack / run / use magic(not usable))"
+                )
+                if player_input in ["attack", "a"]:
                     attacker.attack(enemy)
                     self.view.message += f"\n attacker health: {attacker.health}, enemy dead: {enemy.dead}\n"
                     enemy.attack(attacker)

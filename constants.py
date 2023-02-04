@@ -10,9 +10,10 @@ class Types:
     BOSS: str = "boss"
     SPRIT: str = "sprit"
 
+
 types = Types()
 
 
 GAME_WIDTH = 106
 GAME_HEIGHT = 65
-CAMERA_VIEW = 10
+CAMERA_VIEW = 20

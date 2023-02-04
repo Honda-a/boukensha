@@ -1,11 +1,12 @@
-import random
 import math
-from objects import Wall, Mob #, Boss, Sprit
+import random
+
 import constants as const
+from objects import Mob, Wall  # , Boss, Sprit
 
 
 class Room:
-    """ A room """
+    """A room"""
 
     def __init__(self, r, c, h, w):
         self.row = r
@@ -15,13 +16,13 @@ class Room:
 
 
 class RLDungeonGenerator:
-    """ Generate the dungeon """
+    """Generate the dungeon"""
 
     def __init__(self, width: int, height: int, gameobjects: dict):
-        """ Create the board """
+        """Create the board"""
         self.gameobjects = gameobjects
         self.MAX = 15  # Cutoff for when we want to stop dividing sections
-        
+
         # make the range + 1 so we can avoid out of range problems
         self.width = width + 1
         self.height = height + 1
@@ -76,29 +77,29 @@ class RLDungeonGenerator:
             # The actual room's height and width will be 60-100% of the
             # available section.
             room_width = round(random.randrange(60, 100) / 100 * section_width)
-            room_height = round(random.randrange(
-                60, 100) / 100 * section_height)
+            room_height = round(random.randrange(60, 100) / 100 * section_height)
 
             # If the room doesn't occupy the entire section we are carving it from,
             # 'jiggle' it a bit in the square
             if section_height > room_height:
-                room_start_row = leaf[0] + \
-                    random.randrange(section_height - room_height)
+                room_start_row = leaf[0] + random.randrange(
+                    section_height - room_height
+                )
             else:
                 room_start_row = leaf[0]
 
             if section_width > room_width:
-                room_start_col = leaf[1] + \
-                    random.randrange(section_width - room_width)
+                room_start_col = leaf[1] + random.randrange(section_width - room_width)
             else:
                 room_start_col = leaf[1]
 
             self.rooms.append(
-                Room(room_start_row, room_start_col, room_height, room_width))
+                Room(room_start_row, room_start_col, room_height, room_width)
+            )
             for r in range(room_start_row, room_start_row + room_height):
                 for c in range(room_start_col, room_start_col + room_width):
                     if random.random() < 0.01:
-                        mob = Mob(self.width-1, self.height-1)
+                        mob = Mob(self.width - 1, self.height - 1)
                         mob.move_to(coordX=c, coordY=r)
                         self.dungeon[r][c] = mob
                         self.gameobjects["mob"].append(mob)
@@ -107,7 +108,7 @@ class RLDungeonGenerator:
 
     @staticmethod
     def are_rooms_adjacent(room1, room2):
-        """ See if two rooms are next to each other. """
+        """See if two rooms are next to each other."""
         adj_rows = []
         adj_cols = []
         for r in range(room1.row, room1.row + room1.height):
@@ -122,15 +123,17 @@ class RLDungeonGenerator:
 
     @staticmethod
     def distance_between_rooms(room1, room2):
-        """ Get the distance between two rooms """
+        """Get the distance between two rooms"""
         centre1 = (room1.row + room1.height // 2, room1.col + room1.width // 2)
         centre2 = (room2.row + room2.height // 2, room2.col + room2.width // 2)
 
-        return math.sqrt((centre1[0] - centre2[0]) ** 2 + (centre1[1] - centre2[1]) ** 2)
+        return math.sqrt(
+            (centre1[0] - centre2[0]) ** 2 + (centre1[1] - centre2[1]) ** 2
+        )
 
     def carve_corridor_between_rooms(self, room1, room2):
-        """ Make a corridor between rooms """
-        if room2[2] == 'rows':
+        """Make a corridor between rooms"""
+        if room2[2] == "rows":
             row = random.choice(room2[1])
             # Figure out which room is to the left of the other
             if room1.col + room1.width < room2[0].col:
@@ -219,10 +222,22 @@ class RLDungeonGenerator:
                 adj = self.are_rooms_adjacent(room, other)
                 if len(adj[0]) > 0:
                     room_dict[key].append(
-                        (other, adj[0], 'rows', self.distance_between_rooms(room, other)))
+                        (
+                            other,
+                            adj[0],
+                            "rows",
+                            self.distance_between_rooms(room, other),
+                        )
+                    )
                 elif len(adj[1]) > 0:
                     room_dict[key].append(
-                        (other, adj[1], 'cols', self.distance_between_rooms(room, other)))
+                        (
+                            other,
+                            adj[1],
+                            "cols",
+                            self.distance_between_rooms(room, other),
+                        )
+                    )
 
             groups.append([room])
 
@@ -230,7 +245,7 @@ class RLDungeonGenerator:
             self.find_closest_unconnect_groups(groups, room_dict)
 
     def generate_map(self):
-        """ Make the map """
+        """Make the map"""
         self.random_split(1, 1, self.height - 1, self.width - 1)
         self.carve_rooms()
         self.connect_rooms()
